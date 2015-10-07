@@ -25,7 +25,7 @@ module.exports = function(RED) {
 	var SunEvents = require('./lib/sunevents');
 
 	// The main node definition - most things happen in here
-	function SunEventsNode(config) {
+	function SunsetNode(config) {
 
     	// Create a RED node
     	RED.nodes.createNode(this, config);
@@ -33,7 +33,7 @@ module.exports = function(RED) {
 		var node = this;
 
     	// Store local copies of the node configuration (as defined in the .html)
-    	node.modes = {test: config.testmode, debug: config.verbose}
+    	node.modes = {test: config.testmode, debug: config.verbose, filters: ["sunset"], offset: config.offset}
     	node.name = config.name
     	node.topic = config.topic
 
@@ -51,7 +51,7 @@ module.exports = function(RED) {
 
     	node.events.on("sunevent", function(event, date) {
     		var msg = {}
-    		msg.topic = node.topic || node.name || 'sun events'
+    		msg.topic = node.topic || node.name || 'sunset'
     		msg.payload = event
     		msg.datetime = date
 
@@ -77,14 +77,6 @@ module.exports = function(RED) {
 		});
 	}
 
-	// Register the node by name. This must be called before overriding any of the
-	// Node functions.
-
-	var credentials = {
-        latitude: {type: "text"},
-        longitude: {type: "text"}
-    }
-
-	RED.nodes.registerType("sun events", SunEventsNode, { credentials: credentials } );
+	RED.nodes.registerType("sun-sunset", SunsetNode);
 
 }
